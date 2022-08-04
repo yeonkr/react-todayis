@@ -1,71 +1,87 @@
 import { useRef, useState } from "react";
 
-const DiaryEditor = () => {
-  const authorInput = useRef(); 
+const DiaryEditor = ({ onCreate }) => {
+  const authorInput = useRef();
   const contentInput = useRef();
 
   // 동작이 비슷한 state는 하나로 묶는다.
-  const [state, setState] = useState({ 
+  const [state, setState] = useState({
     author: "",
     content: "",
     emotion: 1,
-  })
+  });
 
-  const handleChangeState = (e)=> { 
+  const handleChangeState = (e) => {
     setState({
       ...state,
       [e.target.name]: e.target.value,
     });
-  }
+  };
 
   const handleSubmit = () => {
-    if(state.author.length < 1){
-      // focus 
-      authorInput.current.focus(); 
-      return ;
+    if (state.author.length < 1) {
+      // 작성자 input focus
+      authorInput.current.focus();
+      return;
     }
-    if(state.content.length < 5){
-      // focus 
+
+    if (state.content.length < 5) {
+      // focus
       contentInput.current.focus();
       return;
     }
-    alert("저장 성공")
-  }
+
+    onCreate(state.author, state.content, state.emotion);
+    alert("저장성공");
+    // setState({
+    //   author: "",
+    //   content: "",
+    //   emotion: 1,
+    // });
+  };
 
   return (
-  <div className="DiaryEditor">
-  <h2>🧀 오늘의 기분 🧀 </h2>
-  <div>
-    <input 
-    ref={authorInput}
-    name="author"
-    value={state.author} 
-    onChange={handleChangeState}
-    />
-  </div>
-  <div>
-  <textarea 
-  ref={contentInput}
-  name="content"
-  vlaue={state.content} 
-  onChange={handleChangeState}
-  />
-  </div>
+    <div className="DiaryEditor">
+      <h2>🧀 오늘의 기분 🧀 </h2>
+      <div>
+        <input
+          ref={authorInput}
+          value={state.author}
+          onChange={handleChangeState}
+          name="author"
+          placeholder="작성자"
+          type="text"
+        />
+      </div>
+      <div>
+        <textarea
+          ref={contentInput}
+          value={state.content}
+          onChange={handleChangeState}
+          name="content"
+          placeholder="일기"
+          type="text"
+        />
+      </div>
 
-  <div> 
-    <span> 감정 점수 : </span>
-  <select name="emotion" value={state.emotion} onChange={handleChangeState}>
+      <div>
+        <span> 감정 점수 : </span>
+        <select
+          name="emotion"
+          value={state.emotion}
+          onChange={handleChangeState}
+        >
           <option value={1}>1</option>
           <option value={2}>2</option>
           <option value={3}>3</option>
           <option value={4}>4</option>
           <option value={5}>5</option>
         </select>
-  </div>
-  <div>
-    <button onClick={handleSubmit}>저장하기</button>
-  </div>
-  </div>
+      </div>
+      <div>
+        <button onClick={handleSubmit}>저장하기</button>
+      </div>
+    </div>
   );
 };
 
