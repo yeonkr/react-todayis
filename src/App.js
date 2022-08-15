@@ -42,25 +42,25 @@ const dummyDate = [
     date: 1660503004588,
   },
   {
-    id: 1,
+    id: 2,
     emotion: 2,
     content: "2번 ㅁㄴㅇㄹ",
     date: 1660503004589,
   },
   {
-    id: 1,
+    id: 3,
     emotion: 3,
     content: "3번 ㅁㄴㅇㄹ",
     date: 1660503004590,
   },
   {
-    id: 1,
+    id: 4,
     emotion: 4,
     content: "4번 ㅁㄴㅇㄹ",
     date: 1660503004591,
   },
   {
-    id: 1,
+    id: 5,
     emotion: 5,
     content: "5번 ㅁㄴㅇㄹ",
     date: 1660503004592,
@@ -116,7 +116,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/new" element={<New />} />
-              <Route path="/Edit" element={<Edit />} />
+              <Route path="/Edit/:id" element={<Edit />} />
               <Route path="/Diary/:id" element={<Diary />} />
             </Routes>
           </div>
