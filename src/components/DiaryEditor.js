@@ -1,13 +1,13 @@
-import { useState, useRef, useContext, useEffect } from "react";
+import { useState, useRef, useContext, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { DiaryDispatchContext } from "../App";
+import { DiaryDispatchContext } from "./../App.js";
 
 import MyHeader from "./MyHeader";
 import MyButton from "./MyButton";
 import EmotionItem from "./EmotionItem";
 
-import { getStringDate } from "../util/date";
-import { emotionList } from "../util/emotion";
+import { getStringDate } from "../util/date.js";
+import { emotionList } from "../util/emotion.js";
 
 const env = process.env;
 env.PUBLIC_URL = env.PUBLIC_URL || "";
@@ -18,10 +18,10 @@ const DiaryEditor = ({ isEdit, originData }) => {
   const [emotion, setEmotion] = useState(3);
   const [date, setDate] = useState(getStringDate(new Date()));
 
-  const { onCreate, onEdit } = useContext(DiaryDispatchContext);
-  const handleClickEmote = (emotion) => {
+  const { onCreate, onEdit, onRemove } = useContext(DiaryDispatchContext);
+  const handleClickEmote = useCallback((emotion) => {
     setEmotion(emotion);
-  };
+  }, []);
   const navigate = useNavigate();
 
   const handleSubmit = () => {
@@ -36,15 +36,20 @@ const DiaryEditor = ({ isEdit, originData }) => {
       )
     ) {
       if (!isEdit) {
-        // 수정 중 x
         onCreate(date, content, emotion);
       } else {
-        // 수정 중
         onEdit(originData.id, date, content, emotion);
       }
     }
-    onCreate(date, content, emotion);
+
     navigate("/", { replace: true });
+  };
+
+  const handleRemove = () => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      onRemove(originData.id);
+      navigate("/", { replace: true });
+    }
   };
 
   useEffect(() => {
@@ -61,6 +66,15 @@ const DiaryEditor = ({ isEdit, originData }) => {
         headText={isEdit ? "일기 수정하기" : "새 일기쓰기"}
         leftChild={
           <MyButton text={"< 뒤로가기"} onClick={() => navigate(-1)} />
+        }
+        rightChild={
+          isEdit && (
+            <MyButton
+              text={"삭제하기"}
+              type={"negative"}
+              onClick={handleRemove}
+            />
+          )
         }
       />
       <div>
@@ -92,7 +106,7 @@ const DiaryEditor = ({ isEdit, originData }) => {
           <h4>오늘의 일기</h4>
           <div className="input_box text_wrapper">
             <textarea
-              placeholder="오늘은 어땠나요?"
+              placeholder="오늘은 어땠나요"
               ref={contentRef}
               value={content}
               onChange={(e) => setContent(e.target.value)}
